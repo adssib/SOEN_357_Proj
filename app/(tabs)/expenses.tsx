@@ -267,80 +267,79 @@ export default function ExpensesScreen() {
             const isHighSpending = budgetPercentage > 90;
             
             const isExpanded = expandedCategory === index;
-
-            return (
-              <View key={index} style={styles.categoryItem}>
-                <TouchableOpacity 
-                  style={styles.categoryItemHeader}
-                  onPress={() => toggleCategoryExpand(index)}
-                >
-                  <View style={styles.categoryLeft}>
-                    <View style={[styles.categoryIcon, { backgroundColor: category.color + '20' }]}>
-                      <Icon size={20} color={category.color} />
-                    </View>
-                    <View style={styles.categoryTextContainer}>
-                      <View style={styles.categoryNameRow}>
-                        <Text style={styles.categoryName}>{category.name}</Text>
-                        {category.trend === 'up' && <TrendingUp size={16} color="#ef4444" style={styles.trendIcon} />}
-                        {category.trend === 'down' && <TrendingDown size={16} color="#10b981" style={styles.trendIcon} />}
-                      </View>
-                      <Text style={styles.categoryPercentage}>{percentage}% of total</Text>
-                    </View>
+          return( 
+            <View key={index} style={styles.categoryItem}>
+              <TouchableOpacity 
+                style={styles.categoryItemHeader}
+                onPress={() => toggleCategoryExpand(index)}
+              >
+                <View style={styles.categoryLeft}>
+                  <View style={[styles.categoryIcon, { backgroundColor: category.color + '20' }]}>
+                    <Icon size={20} color={category.color} />
                   </View>
-                  
-                  <View style={styles.categoryRight}>
-                    <View style={styles.budgetInfoContainer}>
-                      <Text style={styles.categoryAmount}>${category.amount.toFixed(2)}</Text>
-                      <Text style={styles.budgetLimit}>/ ${category.budgetLimit.toFixed(2)}</Text>
+                  <View style={styles.categoryTextContainer}>
+                    <View style={styles.categoryNameRow}>
+                      <Text style={styles.categoryName}>{category.name}</Text>
+                      {category.trend === 'up' && <TrendingUp size={16} color="#ef4444" style={styles.trendIcon} />}
+                      {category.trend === 'down' && <TrendingDown size={16} color="#10b981" style={styles.trendIcon} />}
                     </View>
-                    {isExpanded ? <ChevronUp size={16} color="#64748b" /> : <ChevronDown size={16} color="#64748b" />}
+                    <Text style={styles.categoryPercentage}>{percentage}% of total</Text>
                   </View>
-                </TouchableOpacity>
-                
-                <View style={styles.progressBar}>
-                  <View
-                    style={[
-                      styles.progress,
-                      {
-                        width: `${progressWidth}%`,
-                        backgroundColor: isHighSpending ? '#ef4444' : category.color,
-                      },
-                    ]}
-                  />
                 </View>
                 
-                {budgetPercentage > 100 && (
-                  <View style={styles.warningContainer}>
-                    <AlertCircle size={14} color="#ef4444" />
-                    <Text style={styles.highSpendText}>Over Budget!</Text>
-                  </View>
-                )}
-                {budgetPercentage > 90 && budgetPercentage <= 100 && (
-                  <View style={styles.warningContainer}>
-                    <AlertCircle size={14} color="#f59e0b" />
-                    <Text style={styles.warningText}>Approaching Limit!</Text>
-                  </View>
-                )}
-                
-                {/* Expanded transactions list */}
-                {isExpanded && (
-                  <View style={styles.transactionsContainer}>
-                    <Text style={styles.transactionsTitle}>Recent Transactions</Text>
-                    {category.transactions.map((transaction, tIndex) => (
-                      <View key={tIndex} style={styles.transactionItem}>
-                        <View>
-                          <Text style={styles.transactionMerchant}>{transaction.merchant}</Text>
-                          <Text style={styles.transactionDate}>{transaction.date}</Text>
-                        </View>
-                        <Text style={styles.transactionAmount}>${transaction.amount.toFixed(2)}</Text>
-                      </View>
-                    ))}
-                    <TouchableOpacity style={styles.viewAllButton}>
-                      <Text style={styles.viewAllButtonText}>View All Transactions</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+                <View style={styles.categoryRight}>
+                  {/* Removed categoryAmount and budgetLimit from this section */}
+                  {isExpanded ? <ChevronUp size={16} color="#64748b" /> : <ChevronDown size={16} color="#64748b" />}
+                </View>
+              </TouchableOpacity>
+
+              <View style={styles.progressBar}>
+                <View
+                  style={[styles.progress, {
+                    width: `${progressWidth}%`,
+                    backgroundColor: isHighSpending ? '#ef4444' : category.color,
+                  }]}
+                />
               </View>
+
+              {budgetPercentage > 100 && (
+                <View style={styles.warningContainer}>
+                  <AlertCircle size={14} color="#ef4444" />
+                  <Text style={styles.highSpendText}>Over Budget!</Text>
+                </View>
+              )}
+              {budgetPercentage > 90 && budgetPercentage <= 100 && (
+                <View style={styles.warningContainer}>
+                  <AlertCircle size={14} color="#f59e0b" />
+                  <Text style={styles.warningText}>Approaching Limit!</Text>
+                </View>
+              )}
+
+            {/* Expanded transactions list */}
+            {isExpanded && (
+              <View style={styles.transactionsContainer}>
+                <Text style={styles.transactionsTitle}>Recent Transactions</Text>
+                {category.transactions.map((transaction, tIndex) => (
+                  <View key={tIndex} style={styles.transactionItem}>
+                    <View>
+                      <Text style={styles.transactionMerchant}>{transaction.merchant}</Text>
+                      <Text style={styles.transactionDate}>{transaction.date}</Text>
+                    </View>
+                    <Text style={styles.transactionAmount}>${transaction.amount.toFixed(2)}</Text>
+                  </View>
+                ))}
+                
+              {/* Display categoryAmount and budgetLimit only when expanded */}
+              <View style={styles.budgetInfoContainer}>
+                <Text style={styles.categoryAmount}>${category.amount.toFixed(2)}</Text>
+                <Text style={styles.budgetLimit}>/ ${category.budgetLimit.toFixed(2)}</Text>
+              </View>
+              <TouchableOpacity style={styles.viewAllButton}>
+                <Text style={styles.viewAllButtonText}>View All Transactions</Text>
+              </TouchableOpacity>
+           </View>
+            )}
+          </View>
             );
           })}
         </View>
@@ -531,7 +530,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   categoriesTitle: {
     fontSize: 18,
@@ -555,6 +554,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginBottom: 8,
+    paddingHorizontal: 10, // Add horizontal padding for space
   },
   categoryLeft: {
     flexDirection: 'row',
@@ -563,6 +563,8 @@ const styles = StyleSheet.create({
   categoryRight: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end', // Ensure it aligns to the right and doesn't get cut off
+    width: 120, // Give enough space for the numbers
   },
   categoryTextContainer: {
     flex: 1,
@@ -570,11 +572,13 @@ const styles = StyleSheet.create({
   categoryNameRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between', // Ensure it aligns properly and doesn't cut off
   },
   categoryIcon: {
     padding: 10,
     borderRadius: 12,
     marginRight: 12,
+    minWidth: 40, // Make sure it doesn't get cut off if the space is tight
   },
   categoryName: {
     fontSize: 16,
@@ -589,19 +593,25 @@ const styles = StyleSheet.create({
     color: '#64748b',
   },
   budgetInfoContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    marginRight: 8,
+    flexDirection: 'row',        // Ensures items are aligned horizontally
+    alignItems: 'center',        // Vertically aligns items in the center
+    justifyContent: 'flex-end',  // Ensures the items are aligned to the right
+    flex: 1,                     // Ensures it takes available space
   },
+
   categoryAmount: {
     fontSize: 16,
     fontWeight: '600',
     color: '#0f172a',
+    marginRight: 30, 
+    marginTop: 10,
+    // Adjusted margin for spacing between amount and budget limit
   },
   budgetLimit: {
     fontSize: 14,
     color: '#64748b',
     marginLeft: 4,
+    marginTop: 10,
   },
   progressBar: {
     height: 8,
@@ -636,6 +646,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     borderRadius: 12,
     padding: 16,
+    paddingBottom: 24, // Extra padding at the bottom for better spacing
   },
   transactionsTitle: {
     fontSize: 16,
