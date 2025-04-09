@@ -1,5 +1,9 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { ChartPie as PieChartIcon, ShoppingBag, Coffee, Car, Chrome as Home, Utensils } from 'lucide-react-native';
+import { PieChart } from 'react-native-chart-kit';
+import { Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
 
 const categories = [
   { name: 'Shopping', icon: ShoppingBag, color: '#0891b2', amount: 450.80 },
@@ -13,8 +17,15 @@ export default function ExpensesScreen() {
   const total = categories.reduce((sum, cat) => sum + cat.amount, 0);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingBottom: 100,
+          paddingTop: 60,
+        }}
+        showsVerticalScrollIndicator={false}
+        style={{ backgroundColor: '#fff' }} // No flex here
+      >
+       <View style={{ paddingHorizontal: 24 }}>
         <Text style={styles.title}>Monthly Expenses</Text>
         <Text style={styles.subtitle}>April 2025</Text>
       </View>
@@ -27,12 +38,33 @@ export default function ExpensesScreen() {
         <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
       </View>
 
+      {/* <View style={{ marginHorizontal: 24, marginBottom: 24 }}>
+        <PieChart
+          data={categories.map(cat => ({
+            name: cat.name,
+            population: cat.amount,
+            color: cat.color,
+            legendFontColor: "#334155",
+            legendFontSize: 14,
+          }))}
+          width={screenWidth - 48}
+          height={200}
+          chartConfig={{
+            color: (opacity = 1) => `rgba(15, 23, 42, ${opacity})`,
+          }}
+          accessor="population"
+          backgroundColor="transparent"
+          paddingLeft="15"
+          hasLegend={true}
+        />
+      </View> */}
+
       <View style={styles.categories}>
         <Text style={styles.categoriesTitle}>Spending by Category</Text>
         {categories.map((category, index) => {
           const Icon = category.icon;
           const percentage = ((category.amount / total) * 100).toFixed(1);
-          
+
           return (
             <View key={index} style={styles.categoryItem}>
               <View style={styles.categoryLeft}>
@@ -54,14 +86,6 @@ export default function ExpensesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  header: {
-    padding: 24,
-    paddingTop: 60,
-  },
   title: {
     fontSize: 24,
     fontWeight: '700',
@@ -94,7 +118,7 @@ const styles = StyleSheet.create({
     color: '#0f172a',
   },
   categories: {
-    padding: 24,
+    paddingHorizontal: 24,
   },
   categoriesTitle: {
     fontSize: 18,

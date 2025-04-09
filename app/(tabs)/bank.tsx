@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, FlatList, Pressable, Alert, TextInput, Modal } from 'react-native';
 import { useState } from 'react';
+import { Banknote } from 'lucide-react-native';
 
 type BankAccount = {
   id: string;
@@ -8,9 +9,7 @@ type BankAccount = {
 };
 
 export default function BankAccountsScreen() {
-  const [accounts, setAccounts] = useState<BankAccount[]>([
-
-  ]);
+  const [accounts, setAccounts] = useState<BankAccount[]>([]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newBankName, setNewBankName] = useState('');
@@ -35,18 +34,39 @@ export default function BankAccountsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Linked Bank Accounts</Text>
-      <FlatList
-        data={accounts}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.accountCard}>
-            <Text style={styles.accountName}>{item.name}</Text>
-            <Text style={styles.accountBalance}>${item.balance.toFixed(2)}</Text>
-          </View>
-        )}
-        style={styles.list}
-      />
-      <Pressable style={styles.linkButton} onPress={() => setModalVisible(true)}>
+
+      {accounts.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyTitle}>No accounts linked yet</Text>
+          <Text style={styles.emptySubtitle}>Tap the button below to add one</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={accounts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.accountCard}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Banknote size={20} color="#0f172a" style={{ marginRight: 12 }} />
+                <View>
+                  <Text style={styles.accountName}>{item.name}</Text>
+                  <Text style={styles.accountBalance}>${item.balance.toFixed(2)}</Text>
+                </View>
+              </View>
+            </View>
+          )}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.linkButton,
+          pressed && { opacity: 0.85 },
+        ]}
+        onPress={() => setModalVisible(true)}
+      >
         <Text style={styles.linkButtonText}>+ Link a New Account</Text>
       </Pressable>
 
@@ -66,10 +86,23 @@ export default function BankAccountsScreen() {
               style={styles.input}
             />
             <View style={styles.modalActions}>
-              <Pressable style={styles.modalButton} onPress={handleAddAccount}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.modalButton,
+                  pressed && { opacity: 0.9 },
+                ]}
+                onPress={handleAddAccount}
+              >
                 <Text style={styles.modalButtonText}>Add</Text>
               </Pressable>
-              <Pressable style={[styles.modalButton, { backgroundColor: '#e5e7eb' }]} onPress={() => setModalVisible(false)}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.modalButton,
+                  { backgroundColor: '#e5e7eb' },
+                  pressed && { opacity: 0.9 },
+                ]}
+                onPress={() => setModalVisible(false)}
+              >
                 <Text style={[styles.modalButtonText, { color: '#0f172a' }]}>Cancel</Text>
               </Pressable>
             </View>
@@ -100,6 +133,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     borderRadius: 12,
     marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
   accountName: {
     fontSize: 16,
@@ -132,6 +170,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
   },
   modalTitle: {
     fontSize: 18,
@@ -162,5 +205,19 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '600',
     fontSize: 16,
+  },
+  emptyState: {
+    marginVertical: 40,
+    alignItems: 'center',
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#0f172a',
+    marginBottom: 4,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#64748b',
   },
 });
