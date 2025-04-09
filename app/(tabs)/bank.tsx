@@ -1,52 +1,81 @@
 import { View, Text, StyleSheet, FlatList, Pressable, Alert, TextInput, Modal } from 'react-native';
 import { useState } from 'react';
+import { Banknote } from 'lucide-react-native';
 
 type BankAccount = {
   id: string;
   name: string;
+  accountType: string;
+  accountNumber: string;
   balance: number;
 };
 
 export default function BankAccountsScreen() {
-  const [accounts, setAccounts] = useState<BankAccount[]>([
-
-  ]);
-
+  const [accounts, setAccounts] = useState<BankAccount[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newBankName, setNewBankName] = useState('');
+  const [newAccountType, setNewAccountType] = useState('');
+  const [newAccountNumber, setNewAccountNumber] = useState('');
 
   const handleAddAccount = () => {
-    if (!newBankName.trim()) {
-      Alert.alert('Invalid Input', 'Please enter a bank name.');
+    if (!newBankName.trim() || !newAccountType.trim() || !newAccountNumber.trim()) {
+      Alert.alert('Invalid Input', 'Please fill out all fields.');
       return;
     }
 
     const newAccount: BankAccount = {
       id: Math.random().toString(),
       name: newBankName.trim(),
+      accountType: newAccountType.trim(),
+      accountNumber: newAccountNumber.trim(),
       balance: parseFloat((Math.random() * 5000).toFixed(2)),
     };
 
     setAccounts([...accounts, newAccount]);
     setNewBankName('');
+    setNewAccountType('');
+    setNewAccountNumber('');
     setModalVisible(false);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Linked Bank Accounts</Text>
-      <FlatList
-        data={accounts}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.accountCard}>
-            <Text style={styles.accountName}>{item.name}</Text>
-            <Text style={styles.accountBalance}>${item.balance.toFixed(2)}</Text>
-          </View>
-        )}
-        style={styles.list}
-      />
-      <Pressable style={styles.linkButton} onPress={() => setModalVisible(true)}>
+
+      {accounts.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyTitle}>No accounts linked yet</Text>
+          <Text style={styles.emptySubtitle}>Tap the button below to add one</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={accounts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.accountCard}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Banknote size={20} color="#0f172a" style={{ marginRight: 12 }} />
+                <View>
+                  <Text style={styles.accountName}>{item.name}</Text>
+                  <Text style={styles.accountBalance}>${item.balance.toFixed(2)}</Text>
+                  <Text style={styles.accountType}>{item.accountType}</Text>
+                  <Text style={styles.accountNumber}>Account #: {item.accountNumber}</Text>
+                </View>
+              </View>
+            </View>
+          )}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.linkButton,
+          pressed && { opacity: 0.85 },
+        ]}
+        onPress={() => setModalVisible(true)}
+      >
         <Text style={styles.linkButtonText}>+ Link a New Account</Text>
       </Pressable>
 
@@ -59,17 +88,44 @@ export default function BankAccountsScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Add Bank Account</Text>
+
             <TextInput
               placeholder="Enter bank name"
               value={newBankName}
               onChangeText={setNewBankName}
               style={styles.input}
             />
+            <TextInput
+              placeholder="Enter account type (e.g., Checking)"
+              value={newAccountType}
+              onChangeText={setNewAccountType}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Enter account number"
+              value={newAccountNumber}
+              onChangeText={setNewAccountNumber}
+              style={styles.input}
+            />
+
             <View style={styles.modalActions}>
-              <Pressable style={styles.modalButton} onPress={handleAddAccount}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.modalButton,
+                  pressed && { opacity: 0.9 },
+                ]}
+                onPress={handleAddAccount}
+              >
                 <Text style={styles.modalButtonText}>Add</Text>
               </Pressable>
-              <Pressable style={[styles.modalButton, { backgroundColor: '#e5e7eb' }]} onPress={() => setModalVisible(false)}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.modalButton,
+                  { backgroundColor: '#e5e7eb' },
+                  pressed && { opacity: 0.9 },
+                ]}
+                onPress={() => setModalVisible(false)}
+              >
                 <Text style={[styles.modalButtonText, { color: '#0f172a' }]}>Cancel</Text>
               </Pressable>
             </View>
@@ -100,6 +156,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     borderRadius: 12,
     marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
   accountName: {
     fontSize: 16,
@@ -109,6 +170,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#0891b2',
+    marginTop: 4,
+  },
+  accountType: {
+    fontSize: 14,
+    color: '#64748b',
+    marginTop: 4,
+  },
+  accountNumber: {
+    fontSize: 14,
+    color: '#64748b',
     marginTop: 4,
   },
   linkButton: {
@@ -132,6 +203,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
   },
   modalTitle: {
     fontSize: 18,
@@ -162,5 +238,19 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '600',
     fontSize: 16,
+  },
+  emptyState: {
+    marginVertical: 40,
+    alignItems: 'center',
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#0f172a',
+    marginBottom: 4,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#64748b',
   },
 });
