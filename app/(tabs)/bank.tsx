@@ -5,29 +5,36 @@ import { Banknote } from 'lucide-react-native';
 type BankAccount = {
   id: string;
   name: string;
+  accountType: string;
+  accountNumber: string;
   balance: number;
 };
 
 export default function BankAccountsScreen() {
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [newBankName, setNewBankName] = useState('');
+  const [newAccountType, setNewAccountType] = useState('');
+  const [newAccountNumber, setNewAccountNumber] = useState('');
 
   const handleAddAccount = () => {
-    if (!newBankName.trim()) {
-      Alert.alert('Invalid Input', 'Please enter a bank name.');
+    if (!newBankName.trim() || !newAccountType.trim() || !newAccountNumber.trim()) {
+      Alert.alert('Invalid Input', 'Please fill out all fields.');
       return;
     }
 
     const newAccount: BankAccount = {
       id: Math.random().toString(),
       name: newBankName.trim(),
+      accountType: newAccountType.trim(),
+      accountNumber: newAccountNumber.trim(),
       balance: parseFloat((Math.random() * 5000).toFixed(2)),
     };
 
     setAccounts([...accounts, newAccount]);
     setNewBankName('');
+    setNewAccountType('');
+    setNewAccountNumber('');
     setModalVisible(false);
   };
 
@@ -51,6 +58,8 @@ export default function BankAccountsScreen() {
                 <View>
                   <Text style={styles.accountName}>{item.name}</Text>
                   <Text style={styles.accountBalance}>${item.balance.toFixed(2)}</Text>
+                  <Text style={styles.accountType}>{item.accountType}</Text>
+                  <Text style={styles.accountNumber}>Account #: {item.accountNumber}</Text>
                 </View>
               </View>
             </View>
@@ -79,12 +88,26 @@ export default function BankAccountsScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Add Bank Account</Text>
+
             <TextInput
               placeholder="Enter bank name"
               value={newBankName}
               onChangeText={setNewBankName}
               style={styles.input}
             />
+            <TextInput
+              placeholder="Enter account type (e.g., Checking)"
+              value={newAccountType}
+              onChangeText={setNewAccountType}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Enter account number"
+              value={newAccountNumber}
+              onChangeText={setNewAccountNumber}
+              style={styles.input}
+            />
+
             <View style={styles.modalActions}>
               <Pressable
                 style={({ pressed }) => [
@@ -147,6 +170,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#0891b2',
+    marginTop: 4,
+  },
+  accountType: {
+    fontSize: 14,
+    color: '#64748b',
+    marginTop: 4,
+  },
+  accountNumber: {
+    fontSize: 14,
+    color: '#64748b',
     marginTop: 4,
   },
   linkButton: {

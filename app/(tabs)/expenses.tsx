@@ -17,15 +17,15 @@ export default function ExpensesScreen() {
   const total = categories.reduce((sum, cat) => sum + cat.amount, 0);
 
   return (
-      <ScrollView
-        contentContainerStyle={{
-          paddingBottom: 100,
-          paddingTop: 60,
-        }}
-        showsVerticalScrollIndicator={false}
-        style={{ backgroundColor: '#fff' }} // No flex here
-      >
-       <View style={{ paddingHorizontal: 24 }}>
+    <ScrollView
+      contentContainerStyle={{
+        paddingBottom: 100,
+        paddingTop: 60,
+      }}
+      showsVerticalScrollIndicator={false}
+      style={{ backgroundColor: '#fff' }}
+    >
+      <View style={{ paddingHorizontal: 24 }}>
         <Text style={styles.title}>Monthly Expenses</Text>
         <Text style={styles.subtitle}>April 2025</Text>
       </View>
@@ -38,13 +38,13 @@ export default function ExpensesScreen() {
         <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
       </View>
 
-      {/* <View style={{ marginHorizontal: 24, marginBottom: 24 }}>
+      <View style={{ marginHorizontal: 24, marginBottom: 24 }}>
         <PieChart
           data={categories.map(cat => ({
             name: cat.name,
             population: cat.amount,
             color: cat.color,
-            legendFontColor: "#334155",
+            legendFontColor: '#334155',
             legendFontSize: 14,
           }))}
           width={screenWidth - 48}
@@ -57,14 +57,18 @@ export default function ExpensesScreen() {
           paddingLeft="15"
           hasLegend={true}
         />
-      </View> */}
+      </View>
 
       <View style={styles.categories}>
         <Text style={styles.categoriesTitle}>Spending by Category</Text>
         {categories.map((category, index) => {
           const Icon = category.icon;
-          const percentage = ((category.amount / total) * 100).toFixed(1);
+          const percentage = total > 0 ? ((category.amount / total) * 100).toFixed(1) : 0; // Prevent division by zero
+          // Ensure percentage is a number by parsing it, if it's a string.
+          const numericPercentage = typeof percentage === 'string' ? parseFloat(percentage.replace('%', '')) : percentage;
 
+          // Now use numericPercentage for comparison.
+          const progressWidth = numericPercentage > 100 ? 100 : numericPercentage;
           return (
             <View key={index} style={styles.categoryItem}>
               <View style={styles.categoryLeft}>
@@ -77,6 +81,21 @@ export default function ExpensesScreen() {
                 </View>
               </View>
               <Text style={styles.categoryAmount}>${category.amount.toFixed(2)}</Text>
+              <View style={styles.progressBar}>
+
+              <View
+                style={[
+                  styles.progress,
+                  {
+                    width: progressWidth, // Use the number directly for width.
+                    backgroundColor: category.color,
+                  }
+                ]}
+              />
+              </View>
+              {numericPercentage > 50 && (
+                <Text style={styles.highSpendText}>Warning: High Spend!</Text>
+              )}
             </View>
           );
         })}
@@ -127,9 +146,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   categoryItem: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#f1f5f9',
@@ -156,5 +175,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#0f172a',
+  },
+  progressBar: {
+    height: 8,
+    width: '100%',
+    backgroundColor: '#f1f5f9',
+    borderRadius: 4,
+    marginTop: 8,
+  },
+  progress: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  highSpendText: {
+    color: '#ef4444',
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 8,
   },
 });
