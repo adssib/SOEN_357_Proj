@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, ChartPie as PieChart, Wallet, Settings, Banknote } from 'lucide-react-native';
+import { Home, ChartPie as PieChart, Wallet, Settings, Banknote, Bell } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -28,6 +28,13 @@ export default function TabLayout() {
         options={{
           title: 'Expenses',
           tabBarIcon: ({ size, color }) => <PieChart size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: 'Notifications',
+          tabBarIcon: ({ size, color }) => <Bell size={size} color={color} />,
         }}
       />
       <Tabs.Screen
