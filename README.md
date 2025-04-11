@@ -1,4 +1,4 @@
-# 💰 SpendWise – SOEN 357 Project
+# SpendWise – SOEN 357 Project
 
 **A Minimalist, UX-Driven Approach to Expense Tracking and Integrated Micro-Investing**
 
@@ -93,11 +93,11 @@ You’ll need either [Expo](https://docs.expo.dev/) or a native emulator (Androi
 
 After a 6-week user study with 20+ participants:
 
-- ✅ 75% found setup “very easy”
-- 🎨 90% were satisfied with the app design
-- 💸 55% saved between $10–15/month through round-ups
-- 📅 75% used the app at least twice a week
-- 💡 85% reported improved financial confidence
+- 75% found setup “very easy”
+- 90% were satisfied with the app design
+- 55% saved between $10–15/month through round-ups
+- 75% used the app at least twice a week
+- 85% reported improved financial confidence
 
 ---
 
