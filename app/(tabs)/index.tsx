@@ -1,12 +1,60 @@
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
-import { ArrowUpRight, TrendingUp, DollarSign, Coins } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Pressable, Modal } from 'react-native';
+import { ArrowUpRight, TrendingUp, DollarSign, Coins, Lightbulb } from 'lucide-react-native';
+
+const financeTips = [
+  "If you can't buy it twice, don't buy it.",
+  "Track your expenses daily to find savings.",
+  "Automate your savings to stay consistent.",
+  "Avoid lifestyle inflation — save your raises.",
+  "Pay yourself first — save before you spend.",
+  "Invest early, even in small amounts.",
+  "Build an emergency fund of at least 3 months.",
+  "Impulse spending? Wait 24 hours.",
+  "Use the 50/30/20 budgeting rule.",
+  "Cut subscriptions you rarely use.",
+  "Budget for fun — balance is key.",
+  "Don’t chase trends — invest consistently.",
+  "Buy needs, wait on wants.",
+  "Round up purchases to save passively.",
+  "Know your credit score and monitor it.",
+  "Use cash envelopes for stricter budgeting.",
+  "Cancel one unused subscription today.",
+  "Check your bank app weekly.",
+  "Try no-spend challenges monthly.",
+  "Always compare before big purchases.",
+  "Plan meals to cut food waste.",
+  "Refinance loans for better rates.",
+  "Use windfalls wisely — don’t splurge it all.",
+  "Track net worth over time.",
+  "Start investing with your first paycheck.",
+  "Negotiate bills and ask for discounts.",
+  "Avoid ATM fees — use in-network.",
+  "Keep emergency fund separate from checking.",
+  "Live below your means.",
+  "Read one financial book a year.",
+];
 
 export default function HomeScreen() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentTip, setCurrentTip] = useState('');
+
+  const showRandomTip = () => {
+    const randomTip = financeTips[Math.floor(Math.random() * financeTips.length)];
+    setCurrentTip(randomTip);
+    setModalVisible(true);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Welcome back,</Text>
-        <Text style={styles.name}>Alex</Text>
+        <View>
+          <Text style={styles.greeting}>Welcome back,</Text>
+          <Text style={styles.name}>Alex</Text>
+        </View>
+        <Pressable style={styles.tipButton} onPress={showRandomTip}>
+          <Lightbulb size={22} color="#f59e0b" />
+        </Pressable>
       </View>
 
       <View style={styles.balanceCard}>
@@ -48,6 +96,19 @@ export default function HomeScreen() {
           </View>
         ))}
       </View>
+
+      {/* Tooltip Modal */}
+      <Modal transparent animationType="fade" visible={modalVisible}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Lightbulb size={24} color="#f59e0b" />
+            <Text style={styles.tipText}>{currentTip}</Text>
+            <Pressable style={styles.modalButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.modalButtonText}>Got it</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -60,6 +121,9 @@ const styles = StyleSheet.create({
   header: {
     padding: 24,
     paddingTop: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   greeting: {
     fontSize: 16,
@@ -70,6 +134,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#0f172a',
     marginTop: 4,
+  },
+  tipButton: {
+    backgroundColor: '#fef9c3',
+    padding: 10,
+    borderRadius: 20,
   },
   balanceCard: {
     margin: 24,
@@ -159,5 +228,36 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#ef4444',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modalBox: {
+    backgroundColor: '#ffffff',
+    padding: 24,
+    borderRadius: 16,
+    alignItems: 'center',
+    width: '90%',
+  },
+  tipText: {
+    fontSize: 16,
+    color: '#0f172a',
+    textAlign: 'center',
+    marginVertical: 16,
+  },
+  modalButton: {
+    backgroundColor: '#0891b2',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  modalButtonText: {
+    color: '#ffffff',
+    fontWeight: '600',
+    fontSize: 14,
   },
 });
