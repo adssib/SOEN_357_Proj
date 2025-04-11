@@ -82,7 +82,7 @@ npm install
 ### 3. Start the app
 
 ```bash
-npm run start
+npx expo start
 ```
 
 You’ll need either [Expo](https://docs.expo.dev/) or a native emulator (Android Studio / Xcode) to preview the app.
